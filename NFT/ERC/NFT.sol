@@ -175,6 +175,8 @@ contract XcoinNFT is ERC1155 {
         require(NFT[msg.sender][_id].amount >= _amount, "You don't have this NFT");
         require(_amount > 0, "Amount must be > 0");
         
+        bytes memory data = "";
+        
         // Добавлем в мапинг. id => structNFTInStore
         storeNFT[_id] = structNFTsInStore(
             _id,
@@ -182,6 +184,9 @@ contract XcoinNFT is ERC1155 {
             _amount,
             _price
         );
+
+        // Переводим наши нфт контракту. Что-то типа листинга
+        safeTransferFrom(msg.sender, address(this), _id, _amount, data);
 
         // вычитаем все добавленные nft
         NFT[msg.sender][_id].amount -= _amount;
@@ -192,9 +197,6 @@ contract XcoinNFT is ERC1155 {
         }
 
     }
-
-
-
 
     // XcoinNFT.sol
     constructor(address _owner) ERC1155("./images/") {
