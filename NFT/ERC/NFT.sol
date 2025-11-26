@@ -13,11 +13,10 @@ contract XcoinNFT is ERC1155 {
     uint public unicueCollectionNFT;
 
     // Структуры
-    // Структура, для того чтобы можно было только по id и количеству помещать NFT в магазин, коллекцию или аукцион
-    struct structNFTsInSomething {
+    // Структура, для того чтобы можно было помещать nft в коллекцию
+    struct structNFTsInCollection {
         uint256 id;
-        address owner;
-        uint256 amount; // Работает только у NFT, у коллекций по умолчанию будет 1
+        uint256 amount; 
     }
 
     struct structNFT {
@@ -35,7 +34,7 @@ contract XcoinNFT is ERC1155 {
         string name;
         string description;
         uint256 price; // Заполняется только после помещения в магазин
-        structNFTsInSomething[] NFTInCollection;
+        structNFTsInCollection[] NFTInCollection;
         bool state;
         bool existence;
         uint256 creationDate;
@@ -89,7 +88,7 @@ contract XcoinNFT is ERC1155 {
             _name,
             _description,
             0, // цена указывается после выставления её на продажу
-            new structNFTsInSomething[](0), // нужно для id и количства
+            new structNFTsInCollection[](0), // нужно для id и количства
             false, // в магазине -> true / не в магазине -> false
             true, // Означет, что коллекция существует
             block.timestamp
@@ -111,7 +110,7 @@ contract XcoinNFT is ERC1155 {
 
         // Добавление выбраннх nft в коллекцию
         collectionNFTs[msg.sender][_idCollection].NFTInCollection.push(
-            structNFTsInSomething(_idNFT, msg.sender, _amount)
+            structNFTsInCollection(_idNFT, _amount)
         );
 
         // вычитаем все добавленные nft
