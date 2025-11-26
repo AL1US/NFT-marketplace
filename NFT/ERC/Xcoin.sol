@@ -5,7 +5,17 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Xcoin is ERC20 {
 
+    /*
+    * Обычные переменные
+    */
+
     uint256 public constant INITIAL_SUPPLY = 1_000_000 * 10 ** 18; // количество всех токенов в системе
+
+    address ownerERC20;
+
+    /*
+    * Структуры
+    */
 
     struct structUser {
         string nameUser;
@@ -13,10 +23,14 @@ contract Xcoin is ERC20 {
         uint256 discont; // Процент скидки
     }
 
+    /*
+    * Мапинги
+    */
+
     mapping(address => structUser) public user;
 
-    address ownerERC20;
-
+    // Конструктор нужен для того, чтобы уже при деплое контракта задать
+    // какие либо данные и сделать рутинные действия
     constructor(address _owner) ERC20("Xcoin", "X") {
         ownerERC20 = _owner;
 

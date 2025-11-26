@@ -12,37 +12,65 @@ contract XcoinNFT is ERC1155 {
     uint public unicueNFT; 
     uint public unicueCollectionNFT;
 
-    // Структуры
-    // Структура, для того чтобы можно было помещать nft в коллекцию
+    /*
+    * Все структуры
+    */ 
+
+    // Для того чтобы можно было помещать nft в коллекцию
     struct structNFTsInCollection {
         uint256 id;
         uint256 amount; 
     }
 
+    // Обычные nft
     struct structNFT {
         uint256 id;
         string name;
         string description;
         string imgPath;
         uint256 price; // Заполняется только после помещения в магазин
-        uint256 amount;
+        uint256 amount; // Также выступает в роли проверки существования nft
         uint256 creationDate;
     }
 
+    // Коллекции. По сути это просто метаданные, которые ни как не влияют на обычные nft, но благодоря коллекциями
+    // nft можно объединять, опять же только по метаданным, на сами nft по токену это не как не влияет
     struct structCollectionNFT {
         uint256 id;
         string name;
         string description;
         uint256 price; // Заполняется только после помещения в магазин
         structNFTsInCollection[] NFTInCollection;
-        bool state;
-        bool existence;
+        bool state; // Нужно для того чтобы понять в магазине или нет
+        bool existence; // Нужно для проверки того, есть ли такая коллекция у юзера
         uint256 creationDate;
     }
 
-    // Мапинги
+    // Для того чтобы не засорять магазин ненужными данными, можно создать структуру только с теми данными
+    // которые будет нам нужны
+    struct structNFTsInStore {
+        uint256 id;
+        address owner;
+        uint256 amount;
+        uint256 price;
+    }
+
+    /*
+    * Мапинги
+    */ 
+
+    // Используются именно мапинги, а не массивы, для того чтобы не нагружать контракт циклами,
+    // для оптимизации использования газа, и легкости контрактка (кода соответсвтенно становится меньше)
+
     mapping(address => mapping(uint256 => structNFT)) public NFT;
     mapping(address => mapping(uint256 => structCollectionNFT)) public collectionNFTs;
+
+    mapping(uint256 => structNFTsInStore) public storeNFT; // айди => наш продукт в магазине
+    mapping(uint256 => structNFTsInStore) public storeCollectionNFT;
+
+    /*
+    * Get функции с nft и коллекциями
+    */ 
 
     // Геттер nft по id 
     function getNFT(uint256 _id) public view returns(structNFT memory) {
@@ -53,7 +81,20 @@ contract XcoinNFT is ERC1155 {
     function getCollection(uint256 _id) public view returns(structCollectionNFT memory) {
         return collectionNFTs[msg.sender][_id];
     }
-    
+
+    /*
+    * Get функции с nft и коллекциями в магазине
+    */ 
+
+    // Геттер nft в магазине по id
+    function getStoreNFT(uint256 _id) public view returns (structNFTsInStore memory) {
+        return storeNFT[_id];
+    }
+
+    /*
+    * Set функции с nft и коллекциями
+    */
+
     // Создать nft
     function setNFT(
         string memory _name,
@@ -64,7 +105,7 @@ contract XcoinNFT is ERC1155 {
 
         _mint(msg.sender, unicueNFT, _amount, ""); // Создание nft в системе. Последний параметр принимает комментарий
 
-        // Добавление в мапинг всех нфт, просто чтобы можно было легко понять сколько их и тп
+        // Добавление в мапинг
         NFT[msg.sender][unicueNFT] = structNFT(
             unicueNFT,
             _name,
@@ -106,6 +147,7 @@ contract XcoinNFT is ERC1155 {
         // Проверка на то есть ли NFT у юзера
         require(NFT[msg.sender][_idNFT].amount >= _amount, "You don't have this NFT");
         require(collectionNFTs[msg.sender][_idCollection].existence, "You don't have this collection");
+
         require(_amount > 0, "Amount must be > 0");
 
         // Добавление выбраннх nft в коллекцию
@@ -122,6 +164,35 @@ contract XcoinNFT is ERC1155 {
         }
 
     }
+
+
+    /*
+    * Set функции с nft и коллекциями в магазине
+    */
+
+    // Добавить nft в магазин по id
+    function setNFTInStore(uint256 _id, uint256 _amount, uint256 _price) public {
+        require(NFT[msg.sender][_id].amount >= _amount, "You don't have this NFT");
+        require(_amount > 0, "Amount must be > 0");
+        
+        // Добавлем в мапинг. id => structNFTInStore
+        storeNFT[_id] = structNFTsInStore(
+            _id,
+            msg.sender,
+            _amount,
+            _price
+        );
+
+        // вычитаем все добавленные nft
+        NFT[msg.sender][_id].amount -= _amount;
+
+        // Если nft у юзера закончились, то мы удаляем их
+        if (NFT[msg.sender][_id].amount == 0) {
+            delete NFT[msg.sender][_id];
+        }
+
+    }
+
 
 
 
