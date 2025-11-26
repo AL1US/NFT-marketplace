@@ -20,6 +20,7 @@ contract Main is Xcoin, XcoinNFT {
         require(storeNFT[_id].owner != msg.sender, "The owner of the nft cannot buy it from himself");
         require(balanceOf(msg.sender) >= priceNFT, "You dot't have ehougn Xcoin");
         require(amountNFT >= _amount, "Your chosen amount increases the number of tokens in the store.");
+        require(amountNFT != 0, "This nft does not exist");
 
         // перевод токенов овнеру nft
         transfer(ownerNFT, priceNFT);
