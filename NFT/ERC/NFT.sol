@@ -58,6 +58,10 @@ contract XcoinNFT is ERC1155 {
     mapping(address => mapping(uint256 => structNFT)) public NFT;
     mapping(address => mapping(uint256 => structCollectionNFT)) public collectionNFTs;
 
+    // Используется для того, чтобы понять какие вобще nft существют. Особенно помогает когда юзер
+    // Покупает nft после чего, к нему в мапинг его nft можно просто и удобно добавить по id его куплленный. 
+    mapping(uint256 => structNFT) public allNFT;
+
     /*
     * Get функции с nft и коллекциями
     */ 
@@ -88,8 +92,19 @@ contract XcoinNFT is ERC1155 {
 
         _mint(msg.sender, unicueNFT, _amount, ""); // Создание nft в системе. Последний параметр принимает комментарий
 
-        // Добавление в мапинг
+        // Добавление в мапинг юзера
         NFT[msg.sender][unicueNFT] = structNFT(
+            unicueNFT,
+            _name,
+            _description,
+            _imgPath,
+            0,
+            _amount,
+            block.timestamp
+        );
+
+        // Добавление в мапинг всех NFT
+        allNFT[unicueNFT] = structNFT(
             unicueNFT,
             _name,
             _description,
