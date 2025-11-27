@@ -41,9 +41,6 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
         require(_amount > 0, "Amount must be > 0");
         
         bytes memory data = "";
-        
-
-        // Нужно пофиксить ошибку с тем что наши данные в мапиинге перезаписываются
 
         // Добавлем в мапинг. id => structNFTInStore
         storeNFT[_id] = structNFTsInStore(
@@ -69,6 +66,7 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
 
     function buyNFT(uint256 _id, uint256 _amount) public payable {
 
+        structNFT memory myNewNFT = allNFT[_id];
         uint256 priceNFT = storeNFT[_id].price * _amount;
         uint256 amountNFT = storeNFT[_id].amount;
         address ownerNFT = storeNFT[_id].owner;
@@ -85,15 +83,23 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
         // перевод самих nft
         _safeTransferFrom(address(this), msg.sender, _id, _amount, data);
 
+
         // вычитание _amount из amount
         storeNFT[_id].amount -= _amount;
+
+        // Если такой nft уже есть у юзера, то мы добавляем просто цифорки к количеству его nft
+        if (NFT[msg.sender][_id].amount > 0) {
+            NFT[msg.sender][_id].amount += _amount;
+        } else {
+            NFT[msg.sender][_id] = myNewNFT;
+        }
 
         // if amount in store == 0 -> del this nft 
         if (storeNFT[_id].amount == 0) {
             delete storeNFT[_id];
         }
 
-        
+
     }
 
     // Эта штука как то решает проблему с тем, что этот контракт не может принимать nft
@@ -106,7 +112,6 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
     {
         return super.supportsInterface(interfaceId);
     }
-
 
 
     // Тут мы вручную вносим адрес, чтомы при деплое родительских контрактов, их овнером был не сам контракт,
