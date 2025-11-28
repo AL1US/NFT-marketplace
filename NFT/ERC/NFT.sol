@@ -61,6 +61,7 @@ contract XcoinNFT is ERC1155 {
     // Используется для того, чтобы понять какие вобще nft существют. Особенно помогает когда юзер
     // Покупает nft после чего, к нему в мапинг его nft можно просто и удобно добавить по id его куплленный. 
     mapping(uint256 => structNFT) public allNFT;
+    mapping(uint256 => structCollectionNFT) public allCollection;
 
     /*
     * Get функции с nft и коллекциями
@@ -130,6 +131,18 @@ contract XcoinNFT is ERC1155 {
             new structNFTsInCollection[](0), // нужно для id и количства
             false, // в магазине -> true / не в магазине -> false
             true, // Означет, что коллекция существует
+            block.timestamp
+        );
+
+        // Добавление в мапинг всех коллекций
+        allCollection[unicueCollectionNFT] = structCollectionNFT(
+            unicueCollectionNFT,
+            _name,
+            _description,
+            0,
+            new structNFTsInCollection[](0),
+            false, 
+            true, 
             block.timestamp
         );
 
