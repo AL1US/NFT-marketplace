@@ -129,10 +129,12 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
     }
 
     function setCollectionInStore(uint256 _id, uint256 _price) public {
+
         require(collectionNFTs[msg.sender][_id].existence, "You don't have this collection");
         require(!collectionNFTs[msg.sender][_id].state, "Collection already in store");
-        require( isApprovedForAll(msg.sender, address(this)), "Please approve the marketplace");
+        require(isApprovedForAll(msg.sender, address(this)), "Please approve the marketplace");
 
+        // Создаём объект для удобной работы с ним
         structNFTsInCollection[] storage col = collectionNFTs[msg.sender][_id].NFTInCollection;
         require(col.length > 0, "Collection is empty");
 
@@ -159,6 +161,47 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
         collectionNFTs[msg.sender][_id].state = true;
 
         unicueCollectionNFTInStore++;
+    }
+
+    function buyCollection(uint256 _index) public payable {
+        // Достаём данные из магазина
+        structCollectionInStore memory colStore = storeCollectionNFT[_index];
+
+        address ownerCol = colStore.owner;
+        uint256 idCol = colStore.id;
+        uint256 price = colStore.price;
+        structCollectionNFT memory myNewCollection = allCollection[idCol];
+
+        // Проверки
+        require(ownerCol != address(0), "Collection does not exist");
+        require(ownerCol != msg.sender, "Owner cannot buy own collection");
+        require(balanceOf(msg.sender) >= price, "Not enough Xcoin");
+
+        // Перевод денег владельцу
+        transfer(ownerCol, price);
+
+        // Достаём nft внутри коллекции
+        structNFTsInCollection[] storage col = collectionNFTs[ownerCol][idCol].NFTInCollection;
+
+        uint256[] memory ids = new uint256[](col.length);
+        uint256[] memory amounts = new uint256[](col.length);
+
+        for (uint256 i = 0; i < col.length; i++) {
+            ids[i] = col[i].id;
+            amounts[i] = col[i].amount;
+        }
+
+        // Перевод NFT с контракта покупателю
+        safeBatchTransferFrom(address(this), msg.sender, ids, amounts, "");
+
+        // Удаляем коллекцию из старого владельца
+        delete collectionNFTs[ownerCol][idCol];
+
+        // Передаём коллекцию покупателю
+        collectionNFTs[msg.sender][idCol] = myNewCollection;
+
+        // Удаляем коллекцию из магазина
+        delete storeCollectionNFT[_index];
     }
 
     // Эта штука как то решает проблему с тем, что этот контракт не может принимать nft
