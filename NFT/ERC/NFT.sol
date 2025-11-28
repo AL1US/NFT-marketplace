@@ -145,6 +145,7 @@ contract XcoinNFT is ERC1155 {
         // Проверка на то есть ли NFT у юзера
         require(NFT[msg.sender][_idNFT].amount >= _amount, "You don't have this NFT");
         require(collectionNFTs[msg.sender][_idCollection].existence, "You don't have this collection");
+        require(!collectionNFTs[msg.sender][_idCollection].state, "Collection already in store");
 
         require(_amount > 0, "Amount must be > 0");
 
