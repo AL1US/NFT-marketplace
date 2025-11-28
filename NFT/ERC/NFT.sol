@@ -163,8 +163,6 @@ contract XcoinNFT is ERC1155 {
 
     }
 
-
-    // XcoinNFT.sol
     constructor(address _owner) ERC1155("./images/") {
         ownerERC1155 = _owner;
     }
