@@ -10,6 +10,10 @@ import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 
 contract Main is Xcoin, XcoinNFT, ERC1155Holder {
 
+    // Нужен для того, чтобы если несколько юзеров захотели добавить nft с одинаковым id в магазин,
+    // то данные в мапинге не перезаписались, а добавились новые
+    uint256 indexNFTInStore;
+
     // Для того чтобы не засорять магазин ненужными данными, можно создать структуру только с теми данными
     // которые будет нам нужны
     struct structNFTsInStore {
@@ -18,17 +22,17 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
         uint256 amount;
         uint256 price;
     }
-
-    mapping(uint256 => structNFTsInStore) public storeNFT; // айди => наш продукт в магазине
+    // индекс в магазине => айди => наш продукт в магазине
+    mapping(uint256 => structNFTsInStore) public storeNFT; // index => struct
     mapping(uint256 => structNFTsInStore) public storeCollectionNFT;
 
     /*
     * Get функции с nft и коллекциями в магазине
     */ 
 
-    // Геттер nft в магазине по id
-    function getStoreNFT(uint256 _id) public view returns (structNFTsInStore memory) {
-        return storeNFT[_id];
+    // Геттер nft в магазине по индексу
+    function getStoreNFT(uint256 _index) public view returns (structNFTsInStore memory) {
+        return storeNFT[_index];
     }
 
     /*
@@ -42,8 +46,8 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
         
         bytes memory data = "";
 
-        // Добавлем в мапинг. id => structNFTInStore
-        storeNFT[_id] = structNFTsInStore(
+        // Добавлем в мапинг. index => id => structNFTInStore
+        storeNFT[indexNFTInStore] = structNFTsInStore(
             _id,
             msg.sender,
             _amount,
@@ -62,17 +66,23 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
             delete NFT[msg.sender][_id];
         }
 
+        indexNFTInStore ++;
+
     }
 
-    function buyNFT(uint256 _id, uint256 _amount) public payable {
+
+    // Покупка nft по id.                                                   
+    function buyNFT(uint256 _index, uint256 _amount) public payable {
+
+        uint256 _id = storeNFT[_index].id;
 
         structNFT memory myNewNFT = allNFT[_id];
-        uint256 priceNFT = storeNFT[_id].price * _amount;
-        uint256 amountNFT = storeNFT[_id].amount;
-        address ownerNFT = storeNFT[_id].owner;
+        uint256 priceNFT = storeNFT[_index].price * _amount;
+        uint256 amountNFT = storeNFT[_index].amount;
+        address ownerNFT = storeNFT[_index].owner;
         bytes memory data = "";
 
-        require(storeNFT[_id].owner != msg.sender, "The owner of the nft cannot buy it from himself");
+        require(storeNFT[_index].owner != msg.sender, "The owner of the nft cannot buy it from himself");
         require(balanceOf(msg.sender) >= priceNFT, "You dot't have ehougn Xcoin");
         require(amountNFT >= _amount, "Your chosen amount increases the number of tokens in the store.");
         require(amountNFT != 0, "This nft does not exist");
@@ -85,18 +95,19 @@ contract Main is Xcoin, XcoinNFT, ERC1155Holder {
 
 
         // вычитание _amount из amount
-        storeNFT[_id].amount -= _amount;
+        storeNFT[_index].amount -= _amount;
 
         // Если такой nft уже есть у юзера, то мы добавляем просто цифорки к количеству его nft
         if (NFT[msg.sender][_id].amount > 0) {
             NFT[msg.sender][_id].amount += _amount;
         } else {
             NFT[msg.sender][_id] = myNewNFT;
+            NFT[msg.sender][_id].amount = _amount;
         }
 
         // if amount in store == 0 -> del this nft 
-        if (storeNFT[_id].amount == 0) {
-            delete storeNFT[_id];
+        if (storeNFT[_index].amount == 0) {
+            delete storeNFT[_index];
         }
 
 
