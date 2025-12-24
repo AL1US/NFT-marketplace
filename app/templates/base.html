@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/main.css">
+    <title>{% block title %} {% endblock %}</title>
+</head>
+<body>
+{% block body %}   
+{% endblock %}
+<div id="auth">
+    {% block auth %}
+    {% endblock %}
+</div>
+
+<nav>
+    <div>
+        <a href="/store">NFT store</a>
+        <a href="/auctions">Auctions</a>
+        <a href="/profile">Profile</a>
+        <a href="/login">Sign in</a>
+        <a href="/setNFT">SetNFT</a>
+    </div>
+</nav>
+</body>
+</html>
