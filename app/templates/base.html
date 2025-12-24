@@ -7,21 +7,24 @@
     <title>{% block title %} {% endblock %}</title>
 </head>
 <body>
-{% block body %}   
-{% endblock %}
+    
+<nav>
+    <a href="/">NFT store</a>
+    <a href="/auctions">Auctions</a>
+    <a href="/profile">Profile</a>
+    <a href="/login">Sign in</a>
+    <a href="/setNFT">SetNFT</a>
+</nav>
+
+<div id="content">
+    {% block body %}   
+    {% endblock %}
+</div>
+
 <div id="auth">
     {% block auth %}
     {% endblock %}
 </div>
 
-<nav>
-    <div>
-        <a href="/">NFT store</a>
-        <a href="/auctions">Auctions</a>
-        <a href="/profile">Profile</a>
-        <a href="/login">Sign in</a>
-        <a href="/setNFT">SetNFT</a>
-    </div>
-</nav>
 </body>
 </html>

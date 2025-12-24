@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ошибка {{ code }}</title>
+</head>
+<body>
+  <h1>Что-то пошло не так....</h1>
+  <p>Код ошибки: {{ code }}</p>
+  <p>Описание: {{ error }}</p>
+  <img src="{{ url_for('static', filename='images/error.png') }}" alt="Ошибка" width="300">
+</body>
+</html>
