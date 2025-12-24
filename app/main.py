@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, session, jsonify, url_for
-from blockchain.client import contract_client
-from utils import ALL_METHODS
+from src.blockchain.client import contract_client
+from app.src.utils import ALL_METHODS
 
 app = Flask(__name__)
 app.secret_key = 'secret_key' 
@@ -41,9 +41,17 @@ def profile():
     
     contract_client.set_account(pk)
 
-    user = contract_client.contract.functions.getUser().call()
-    balance = contract_client.contract.functions.balanceOf(pk).call()
-    nft = contract_client.contract.functions.getNFT(0).call()
+    user = contract_client.to_transact(method_name="getUser")
+    balance = contract_client.to_transact(
+        method_name="balanceOf",
+        args=[pk]
+    )
+    
+    nft = contract_client.to_transact(
+        method_name="getNFT",
+        args=[0]
+    )
+    
     return render_template(
         "profile.html",
         data=user,
@@ -67,6 +75,7 @@ def setNFT():
                 request.form.get("img_nft"),
                 amount
             )
+            
         except Exception as e:
             return jsonify({'error': str(e)}), 500
     return render_template("setNFT.html")

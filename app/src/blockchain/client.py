@@ -31,7 +31,19 @@ class ContractClient():
         self.pk = None
         self.w3.eth.default_account = None
 
-
+    def to_transact(self, method_name: str, args: list = None,  is_transact: bool = False, value_wei: int = 0):
+        try:
+            method = getattr(self.contract.functions, method_name)
+            func = method(*(args or []))
+            tx_params = {}
+            
+            if value_wei:
+                tx_params["value"] = value_wei
+                
+            return func.transact(tx_params) if is_transact else func.call()
+        except Exception as e:
+            return e
+        
 contract_client = ContractClient(
     provider=node_blockchain,
     json_contract_path=f"{BASE_DIR}/Contract.sol/Contract.json"
