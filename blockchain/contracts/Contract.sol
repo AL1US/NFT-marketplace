@@ -14,8 +14,8 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
     address owner;
     
     // Своего рода id для nft и коллекций
-    uint public unicueNFT; 
-    uint public unicueCollectionNFT;
+    uint256 public unicueNFT; 
+    uint256 public unicueCollectionNFT;
 
     uint256 public indexNFTInStore;
     uint256 public unicueCollectionNFTInStore;
@@ -159,9 +159,58 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         return NFT[msg.sender][_id];
     }
 
+    // Получить все nft юзера
+    function getMyAllNFTs() public view returns(structNFT[] memory) {
+        uint256 count = 0;
+        
+        // Запоминаем сколько всего nft у юзера
+        for (uint256 i = 0; i < unicueNFT; i++) {
+            if (NFT[msg.sender][i].amount > 0) {
+                count++;
+            }
+        }
+        // Создаём массив с тем количеством ячеек сколько всего нфт у юзера, в который будем класть нфт
+        structNFT[] memory NFTs = new structNFT[](count);
+
+        // По этому индексу кладём в массив найденные нфт
+        uint256 index = 0;
+
+        for (uint256 i = 0; i < unicueNFT; i++) {
+            if (NFT[msg.sender][i].amount > 0) {
+                NFTs[index] = NFT[msg.sender][i]; // Кладём нфт в массив, если они существуют
+                index++;
+            }
+        }
+
+        return NFTs;
+    }
+
     // Геттер коллекции по id
     function getCollection(uint256 _id) public view returns(structCollectionNFT memory) {
         return collectionNFTs[msg.sender][_id];
+    }
+
+    // Все коллекции
+    function getMyCollections() public view returns (structCollectionNFT[] memory) {
+        uint256 count = 0;
+
+        for (uint256 i = 0; i < unicueCollectionNFT; i++) {
+            if (collectionNFTs[msg.sender][i].existence) {
+                count++;
+            }
+        }
+
+        structCollectionNFT[] memory result = new structCollectionNFT[](count);
+        uint256 index = 0;
+
+        for (uint256 i = 0; i < unicueCollectionNFT; i++) {
+            if (collectionNFTs[msg.sender][i].existence) {
+                result[index] = collectionNFTs[msg.sender][i];
+                index++;
+            }
+        }
+
+        return result;
     }
 
     /*
@@ -172,18 +221,118 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
     function getStoreNFT(uint256 _index) public view returns (structNFTsInStore memory) {
         return storeNFT[_index];
     }
+
+    function getAllStoreNFTs() public view returns (structNFTsInStore[] memory) {
+        uint256 count = 0;
+
+        for (uint256 i = 0; i < indexNFTInStore; i++) {
+            if (storeNFT[i].amount > 0) {
+                count++;
+            }
+        }
+
+        structNFTsInStore[] memory result = new structNFTsInStore[](count);
+        uint256 index = 0;
+
+        for (uint256 i = 0; i < indexNFTInStore; i++) {
+            if (storeNFT[i].amount > 0) {
+                result[index] = storeNFT[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
     // get col in store
     function getCollectionInStore(uint256 _index) public view returns (structCollectionInStore memory) {
         return storeCollectionNFT[_index];
     }
+
+    // Все коллекции в магазине
+    function getAllStoreCollections() public view returns (structCollectionInStore[] memory) {
+        uint256 count = 0;
+
+        for (uint256 i = 0; i < unicueCollectionNFTInStore; i++) {
+            if (storeCollectionNFT[i].owner != address(0)) {
+                count++;
+            }
+        }
+
+        structCollectionInStore[] memory result = new structCollectionInStore[](count);
+        uint256 index = 0;
+
+        for (uint256 i = 0; i < unicueCollectionNFTInStore; i++) {
+            if (storeCollectionNFT[i].owner != address(0)) {
+                result[index] = storeCollectionNFT[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
     // get auction NFT
     function getAuctionNFT(uint256 _index) public view returns(structAuctionNFT memory) {
         return auctionNFT[_index];
     }
 
+    // Получить все активные аукционы NFT
+    function getAllAuctionNFTs() public view returns (structAuctionNFT[] memory) {
+        uint256 count = 0;
+
+        // Считаем, сколько аукционов существует
+        for (uint256 i = 0; i < indexNFTAuction; i++) {
+            if (auctionNFT[i].ownerAuction != address(0)) {
+                count++;
+            }
+        }
+
+        // Создаём массив нужного размера
+        structAuctionNFT[] memory auctions = new structAuctionNFT[](count);
+        uint256 index = 0;
+
+        // Заполняем массив
+        for (uint256 i = 0; i < indexNFTAuction; i++) {
+            if (auctionNFT[i].ownerAuction != address(0)) {
+                auctions[index] = auctionNFT[i];
+                index++;
+            }
+        }
+
+        return auctions;
+    }
+
+
     // get auction collection
     function getAuctionCollection(uint256 _index) public view returns(structAuctionCollection memory) {
         return auctionCollection[_index];
+    }
+
+    // Получить все аукционы коллекций
+    function getAllAuctionCollections() public view returns (structAuctionCollection[] memory) {
+        uint256 count = 0;
+
+        // Считаем, сколько аукционов коллекций существует
+        for (uint256 i = 0; i < indexCollectionAuction; i++) {
+            if (auctionCollection[i].ownerAuction != address(0)) {
+                count++;
+            }
+        }
+
+        // Создаём массив нужного размера
+        structAuctionCollection[] memory auctions = new structAuctionCollection[](count);
+        uint256 index = 0;
+
+        // Заполняем массив
+        for (uint256 i = 0; i < indexCollectionAuction; i++) {
+            if (auctionCollection[i].ownerAuction != address(0)) {
+                auctions[index] = auctionCollection[i];
+                index++;
+            }
+        }
+
+        return auctions;
     }
 
     // Создать nft
@@ -519,6 +668,49 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         delete betNFT[_index];
     }
 
+    /*
+    * Отмена продажи нфт и коллекций
+    */
+
+    // Отмена продажи NFT
+    function cancelNFTSale(uint256 _index) public {
+        structNFTsInStore storage item = storeNFT[_index];
+
+        require(item.amount > 0, "NFT not in store");
+        require(item.owner == msg.sender, "Not your NFT");
+
+        // Возврат NFT владельцу
+        bytes memory data = "";
+        _safeTransferFrom(address(this), msg.sender, item.id, item.amount, data);
+
+        // Удаляем из магазина
+        delete storeNFT[_index];
+    }
+
+    // Отмена продажи коллекции
+    function cancelCollectionSale(uint256 _index) public {
+        structCollectionInStore storage colStore = storeCollectionNFT[_index];
+
+        require(colStore.NFTInCollection.length > 0, "Collection not in store");
+        require(colStore.owner == msg.sender, "Not your collection");
+
+        // Возврат всех NFT из коллекции владельцу
+        uint256[] memory ids = new uint256[](colStore.NFTInCollection.length);
+        uint256[] memory amounts = new uint256[](colStore.NFTInCollection.length);
+
+        for (uint256 i = 0; i < colStore.NFTInCollection.length; i++) {
+            ids[i] = colStore.NFTInCollection[i].id;
+            amounts[i] = colStore.NFTInCollection[i].amount;
+        }
+
+        safeBatchTransferFrom(address(this), msg.sender, ids, amounts, "");
+
+        // Обновляем состояние коллекции
+        collectionNFTs[msg.sender][colStore.id].state = false;
+
+        // Удаляем из магазина
+        delete storeCollectionNFT[_index];
+    }
 
     // Эта штука как то решает проблему с тем, что этот контракт не может принимать nft
     function supportsInterface(bytes4 interfaceId)
