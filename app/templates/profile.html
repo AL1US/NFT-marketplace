@@ -1,33 +1,33 @@
-{% extends "base.html" %}
-
-{% block title %}Profile{% endblock %}
-
-{% block body %}
+{% extends "base.html" %} {% block title %}Profile{% endblock %} {% block body
+%}
 <div>
-    <h1>Profile</h1>
-    <p>Адрес: {{ pk }}</p>
-    <p>balance: {{ balance }}</p>
-    <p>name: {{ data[0] }}</p>
+  <h1>Profile</h1>
+  <p>Адрес: {{ pk }}</p>
+  <p>balance: {{ balance }}</p>
+  <p>name: {{ data[0] }}</p>
 </div>
 
-    <!-- struct structNFT {
-       0 uint256 id;
-       1 string name;
-       2 string description;
-       3 string imgPath;
-       4 uint256 price; // Заполняется только после помещения в магазин
-       5 uint256 amount; // Также выступает в роли проверки существования nft
-       6 uint256 creationDate;
+<!-- struct structNFT {
+        0 uint256 id;
+        1 string name;
+        2 string description;
+        3 string imgPath;
+        4 uint256 price; // Заполняется только после помещения в магазин
+        5 uint256 amount; // Также выступает в роли проверки существования nft
+        6 uint256 creationDate;
     } -->
 
 <div>
-    <h1>NFT</h1>
-    <p>{{nft[3]}}</p>
-    <p>id: {{nft[0]}}</p>
-    <p>name: {{nft[1]}}</p>
-    <p>description: {{nft[2]}}</p>
-    <!-- <p>price:{{nft[4]}}</p> -->
-    <p>amount: {{nft[5]}}</p>
-    <p>creation date: {{nft[6]}}</p>
+  <h1>NFT</h1>
+  <p>{{nft[0][1]}}</p>
+  <p>{{nft[1]}}</p>
+  <p>{{nft[2]}}</p>
+  <p>{{nft[3]}}</p>
+  <p>{{nft[4]}}</p>
 </div>
-{% endblock %}
+
+{% if session.get('pk') %}
+<a href="{{ url_for('user.logout') }}" class="btn">Logout</a>
+{% else %}
+<p>Вы не вошли в систему</p>
+{% endif %} {% endblock %}

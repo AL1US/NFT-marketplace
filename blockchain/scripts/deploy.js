@@ -6,23 +6,30 @@ async function main() {
 
   // await myContract.waitForDeployment();
 
-
-  // пуш адресса контракта в файл json 
+  // пуш адресса контракта в файл json
   const fs = require("fs");
   const path = require("path");
-  
-  const filePath = path.join(__dirname, "../artifacts/contracts/Contract.sol/Contract.json");
-  const filePathUsers = path.join(__dirname, "../artifacts/contracts/user.sol/Users.json");
-  
-  let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {};
-  data.address = contract.target;  
+
+  const filePath = path.join(
+    __dirname,
+    "../artifacts/contracts/Contract.sol/Contract.json"
+  );
+  const filePathUsers = path.join(
+    __dirname,
+    "../artifacts/contracts/user.sol/Users.json"
+  );
+
+  let data = fs.existsSync(filePath)
+    ? JSON.parse(fs.readFileSync(filePath))
+    : {};
+  data.address = contract.target;
   // data.address = contract.address; //for home
   fs.writeFileSync(filePath, JSON.stringify(data));
 }
 
 main()
   .then(() => process.exit(0))
-  .catch(error => {
+  .catch((error) => {
     console.error(error);
     process.exit(1);
-});
+  });

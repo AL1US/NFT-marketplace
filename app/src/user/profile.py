@@ -10,7 +10,6 @@ def profile():
         return redirect("/login")
 
     pk = session["pk"]
-    pk = contract_client.w3.to_checksum_address(pk)
     
     contract_client.set_account(pk)
 
@@ -21,8 +20,7 @@ def profile():
     )
     
     nft = contract_client.to_transact(
-        method_name="getNFT",
-        args=[0]
+        method_name="getMyAllNFTs",
     )
     
     return render_template(

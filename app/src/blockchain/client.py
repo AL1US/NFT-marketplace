@@ -6,7 +6,7 @@ BASE_DIR = "../blockchain/artifacts/contracts"
 node_blockchain = "http://127.0.0.1:8545"
 
 class ContractClient():
-    
+
     def __init__(self, provider: str, json_contract_path: str):
         self.w3 = Web3(Web3.HTTPProvider(provider))
         self.pk = None
@@ -23,8 +23,8 @@ class ContractClient():
             abi=config["abi"]
         )
         
-    def set_account(self, pk: str):
-        self.pk = self.w3.to_checksum_address(pk)
+    def set_account(self, public_key: str):
+        self.pk = self.w3.to_checksum_address(public_key)
         self.w3.eth.default_account = self.pk
 
     def unset_account(self):

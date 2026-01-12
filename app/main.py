@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, redirect, session, jsonify, u
 
 from src.blockchain.client import contract_client
 from src.user.account import user_app
-from src.user.getFunctions import profile_app
-from src.nft.setFunctions import nft_app
+from src.user.profile import profile_app
+from src.nft_func.set_nft import nft_app
 
 app = Flask(__name__)
 app.secret_key = 'secret_key' 

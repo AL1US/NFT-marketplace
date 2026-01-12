@@ -1,25 +1,22 @@
-{% extends "base.html" %}
-{% block title %}Create NFT{% endblock %}
-
-{% block body %}
+{% extends "base.html" %} {% block title %}Create NFT{% endblock %} {% block body %}
 
 <div>
-  <h1>Создать NFT</h1>
-  <form method="post">
-    <label for="img_nft">URL изображения:</label><br>
-    <textarea name="img_nft" id="img_nft" placeholder="Введите url"></textarea><br><br>
+    <h1>Создать NFT</h1>
+    <form method="post">
+        <label for="img_nft">URL изображения:</label><br />
+        <textarea name="img_nft" id="img_nft" placeholder="Введите url"></textarea><br /><br />
 
-    <label for="name_nft">Название:</label><br>
-    <input type="text" name="name_nft" id="name_nft" placeholder="Введите название"><br><br>
+        <label for="name_nft">Название:</label><br />
+        <input type="text" name="name_nft" id="name_nft" placeholder="Введите название" /><br /><br />
 
-    <label for="description">Описание:</label><br>
-    <textarea name="description" id="description" placeholder="Введите описание"></textarea><br><br>
+        <label for="description">Описание:</label><br />
+        <textarea name="img_nft" id="description" placeholder="Введите Описание"></textarea><br /><br />
 
-    <label for="amount">Количество:</label><br>
-    <input type="number" name="amount" id="amount" placeholder="Введите количество"><br><br>
+        <label for="amount">Количество:</label><br />
+        <input type="number" name="amount" id="amount" placeholder="Введите количество" /><br /><br />
 
-    <input type="submit" value="Создать">
-  </form>
+        <input type="submit" value="Создать" />
+    </form>
 </div>
 
 {% endblock %}

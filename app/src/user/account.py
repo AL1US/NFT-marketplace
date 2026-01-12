@@ -1,5 +1,5 @@
 from src.blockchain.client import contract_client
-from flask import Blueprint, Flask, redirect, render_template, request, session, jsonify
+from flask import Blueprint, render_template, request, session, jsonify, url_for, redirect
 
 user_app = Blueprint("user", __name__)
 
@@ -15,12 +15,21 @@ def login():
         
         try:
             contract_client.set_account(pk)
-            session['pk'] = pk
+            session['pk'] = contract_client.pk
             
             return jsonify({
                 'success': True,
+                'redirect': url_for('profile.profile')
             })
+            
+            return redirect("profile.html")
         except Exception as e:
             return jsonify({'error': str(e)}), 500
     
     return render_template("auth.html")
+
+@user_app.route("/logout")
+def logout():
+    contract_client.unset_account()
+    session.pop('pk', None)
+    return redirect(url_for("index"))
