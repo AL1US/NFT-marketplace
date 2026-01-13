@@ -20,7 +20,7 @@
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ pk: selectedAccount }),
+          body: JSON.stringify({ public_key: selectedAccount }),
         })
           .then((response) => response.json())
           .then((data) => {

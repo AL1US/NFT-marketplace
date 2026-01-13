@@ -19,7 +19,21 @@ def page_not_found(error):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    
+    if "public_key" not in session:
+        return redirect("/login")
+
+    public_key = session["public_key"]
+    
+    nft = contract_client.to_transact(
+        method_name="getAllStoreNFTs",
+    )
+    
+    return render_template(
+        "index.html",
+        nft = nft
+    )
+    
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -8,21 +8,20 @@ def login():
     if request.method == 'POST':
         
         data = request.get_json()
-        pk = data.get('pk')
+        public_key = data.get('public_key')
         
-        if not pk:
+        if not public_key:
             return jsonify({'error': 'Нет публичного ключа'}), 400
         
         try:
-            contract_client.set_account(pk)
-            session['pk'] = contract_client.pk
+            contract_client.set_account(public_key)
+            session['public_key'] = contract_client.public_key
             
             return jsonify({
                 'success': True,
                 'redirect': url_for('profile.profile')
             })
             
-            return redirect("profile.html")
         except Exception as e:
             return jsonify({'error': str(e)}), 500
     
@@ -31,5 +30,5 @@ def login():
 @user_app.route("/logout")
 def logout():
     contract_client.unset_account()
-    session.pop('pk', None)
+    session.pop('public_key', None)
     return redirect(url_for("index"))

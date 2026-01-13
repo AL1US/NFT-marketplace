@@ -9,7 +9,7 @@ class ContractClient():
 
     def __init__(self, provider: str, json_contract_path: str):
         self.w3 = Web3(Web3.HTTPProvider(provider))
-        self.pk = None
+        self.public_key = None
         
         with open(Path(json_contract_path)) as f:
             config = json.load(f)
@@ -24,26 +24,24 @@ class ContractClient():
         )
         
     def set_account(self, public_key: str):
-        self.pk = self.w3.to_checksum_address(public_key)
-        self.w3.eth.default_account = self.pk
+        self.public_key = self.w3.to_checksum_address(public_key)
+        self.w3.eth.default_account = self.public_key
 
     def unset_account(self):
-        self.pk = None
+        self.public_key = None
         self.w3.eth.default_account = None
 
-    def to_transact(self, method_name: str, args: list = None,  is_transact: bool = False, value_wei: int = 0):
-        try:
-            method = getattr(self.contract.functions, method_name)
-            func = method(*(args or []))
-            tx_params = {}
-            
-            if value_wei:
-                tx_params["value"] = value_wei
-                
-            return func.transact(tx_params) if is_transact else func.call()
-        except Exception as e:
-            return e
-        
+    def to_transact(self, method_name: str, args: list = None, is_transact: bool = False, value_wei: int = 0):
+        method = getattr(self.contract.functions, method_name)
+        func = method(*(args or []))
+        tx_params = {"from": self.public_key}
+        if value_wei:
+            tx_params["value"] = value_wei
+
+        if is_transact:
+            return func.transact(tx_params)
+        return func.call()
+
 contract_client = ContractClient(
     provider=node_blockchain,
     json_contract_path=f"{BASE_DIR}/Contract.sol/Contract.json"

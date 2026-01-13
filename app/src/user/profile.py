@@ -6,17 +6,15 @@ profile_app = Blueprint("profile", __name__)
 
 @profile_app.route("/profile")
 def profile():
-    if "pk" not in session:
+    if "public_key" not in session:
         return redirect("/login")
 
-    pk = session["pk"]
-    
-    contract_client.set_account(pk)
+    public_key = session["public_key"]
 
     user = contract_client.to_transact(method_name="getUser")
     balance = contract_client.to_transact(
         method_name="balanceOf",
-        args=[pk]
+        args=[public_key]
     )
     
     nft = contract_client.to_transact(
@@ -26,7 +24,7 @@ def profile():
     return render_template(
         "profile.html",
         data=user,
-        pk=pk,
+        public_key=public_key,
         balance=balance,
         nft = nft
     )
