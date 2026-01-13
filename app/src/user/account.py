@@ -1,5 +1,5 @@
 from src.blockchain.client import contract_client
-from flask import Blueprint, render_template, request, session, jsonify, url_for, redirect
+from flask import Blueprint, render_template, request, session, jsonify, url_for, redirect, flash
 
 user_app = Blueprint("user", __name__)
 
@@ -32,3 +32,23 @@ def logout():
     contract_client.unset_account()
     session.pop('public_key', None)
     return redirect(url_for("index"))
+
+@user_app.route("/approve", methods=['GET', 'POST'])
+def approve():
+    
+    if "public_key" not in session:
+        flash('Сначала войди в систему', 'error')
+        return redirect("/login")
+    
+    public_key = session["public_key"]
+    
+    contract_client.set_account(public_key)
+    
+    try:
+        contract_client.approve_nft_contract()
+        return redirect("/")
+        
+    except Exception as e:
+        flash({'error': str(e)}), 500
+        
+    return render_template("profile.html")

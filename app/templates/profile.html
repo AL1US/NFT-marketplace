@@ -2,7 +2,7 @@
 %}
 <div>
   <h1>Profile</h1>
-  <p>Адрес: {{ pk }}</p>
+  <p>Адрес: {{ public_key }}</p>
   <p>balance: {{ balance }}</p>
   <p>name: {{ data[0] }}</p>
 </div>
@@ -19,15 +19,16 @@
 
 <div>
   <h1>NFT</h1>
+  <img src="{{ nft[0][3] }}" alt="ImageNFT" />
+  <p>{{nft[0][0]}}</p>
   <p>{{nft[0][1]}}</p>
-  <p>{{nft[1]}}</p>
-  <p>{{nft[2]}}</p>
-  <p>{{nft[3]}}</p>
-  <p>{{nft[4]}}</p>
+  <p>{{nft[0][2]}}</p>
+  <!-- <p>{{nft[0][3]}}</p>  -->
+  <p>{{nft[0][4]}}</p>
 </div>
-
+<a href="{{ url_for('user.approve') }}">Approve contract</a>
 {% if session.get('pk') %}
-<a href="{{ url_for('user.logout') }}" class="btn">Logout</a>
+<a href="{{ url_for('user.logout') }}" >Logout</a>
 {% else %}
 <p>Вы не вошли в систему</p>
 {% endif %} {% endblock %}

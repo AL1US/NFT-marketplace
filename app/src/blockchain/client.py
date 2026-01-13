@@ -23,6 +23,8 @@ class ContractClient():
             abi=config["abi"]
         )
         
+        self.marketplace_address = self.contract.address
+        
     def set_account(self, public_key: str):
         self.public_key = self.w3.to_checksum_address(public_key)
         self.w3.eth.default_account = self.public_key
@@ -41,6 +43,20 @@ class ContractClient():
         if is_transact:
             return func.transact(tx_params)
         return func.call()
+    
+    
+    def approve_nft_contract(self):
+        if not self.public_key:
+            raise ValueError("Account not set")
+            
+        return self.to_transact(
+            method_name="setApprovalForAll",
+            args=[
+                self.marketplace_address,
+                True
+            ],
+            is_transact=True
+        )
 
 contract_client = ContractClient(
     provider=node_blockchain,

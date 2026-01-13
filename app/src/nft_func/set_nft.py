@@ -15,20 +15,27 @@ def setNFT():
     if request.method == "POST":
         try:
             amount_str = request.form.get("amount")
-            if not amount_str:  # проверка на пустое значение
-                return jsonify({'error': 'Amount не указан'}), 400
+            img_nft = request.form.get("img_nft")
+            name_nft = request.form.get("name_nft")
+            description = request.form.get("description")
             amount = int(amount_str)
-
+            
+            if not all([amount_str, img_nft, name_nft, description]):
+                flash("Заполните все поля", "error")
+                return render_template("setNFT.html")
+            
             contract_client.to_transact(
                 method_name="setNFT",
                 args=[
-                    request.form.get("name_nft"),
-                    request.form.get("description"),
-                    request.form.get("img_nft"),
+                    name_nft,
+                    description,
+                    img_nft,
                     amount
                 ],
                 is_transact=True
             )
+            
+            return redirect("/profile")
         
         except Exception as e:
             flash({'error': str(e)}), 500
@@ -66,6 +73,7 @@ def setNFTInStore():
                 ],
                 is_transact=True
             )
+            return redirect("/")
             
         except Exception as e:
             flash({'error': str(e)}), 500
