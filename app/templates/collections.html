@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Collections{% endblock %}
+
+{% block body %}
+
+<div>
+    <h1>Collections in store</h1>
+</div>
+<!-- 
+    struct structCollectionInStore {
+        uint256 id;
+        address owner;
+        structNFTsInCollection[] NFTInCollection;
+        uint256 price;
+        uint256 indexInStore;
+    } -->
+
+<div class="nft-grid">
+	{% for item in collection %}
+		<div>
+			<div>
+				<!-- по хорошему еще вытянуть имя nft -->
+				<h3>id: {{ item[0] }}</h3>
+				<h3>все nft в коллекции: {{ item[2] }}</h3>
+				<h3>{{ item[3] }}wei</h3>
+				<form action="{{ url_for('coll.buy_collection', index=item[4], price=item[3]) }}" method="POST">
+					<button type="submit" class="button">BUY</button>
+				</form>
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+{% endblock %} 

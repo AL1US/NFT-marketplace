@@ -53,7 +53,13 @@
 			</div>
 		</div>
 	{% endfor %}
-	{% for i in collection%}
+</div>
+<div>
+	<hr>
+</div>
+<h1>Collection</h1>
+<div class="nft-grid">
+	{% for item in collection %}
 	    <!-- struct structCollectionNFT {
         uint256 id;
         string name;
@@ -64,9 +70,25 @@
         bool existence; // Нужно для проверки того, есть ли такая коллекция у юзера
         uint256 creationDate;
     } -->
-		<div>
+		<div class="info">
+			<p>id: {{ item[0] }}</p>
+			<p>name: {{ item[1] }}</p>
+			<p>description: {{ item[2] }}</p>
+			<p>state: {{ item[5] }}</p>
+			<details>
+				<summary class="sell-btn">Выставить на продажу</summary>
 
+				<form action="{{ url_for('coll.setCollectionInStore', id=item[0]) }}" method="POST">
+					<input type="hidden" name="id" value="{{ item[0] }}">
+
+					<label>Цена:</label>
+					<input type="number" name="price" min="1" required>
+
+					<button type="submit">Подтвердить</button>
+				</form>
+			</details>
 		</div>
+
 	{% endfor %}
 
 </div>
