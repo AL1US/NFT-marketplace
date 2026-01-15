@@ -117,3 +117,23 @@ def setBet(id):
 
 # FINISH AUCTION
 
+@auc_app.route("/finishAuctionNFT/<int:index>", methods=["POST"])
+def finishAuctionNFT(index):
+    if "public_key" not in session:
+        return redirect("/login")
+    
+    contract_client.set_account(session["public_key"])
+    try:
+        
+        contract_client.to_transact(
+                method_name="finishAuctionNFT",
+                args=[
+                    index,
+                ],
+                is_transact=True,
+            )
+    except Exception as e:
+        flash(str(e), "error")
+        
+    return redirect("/profile")
+

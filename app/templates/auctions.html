@@ -8,14 +8,23 @@
     <h1>Auctions NFT</h1>
 </div>
 
+    <!-- struct structAuctionNFT {
+    0    uint256 id;
+    1    address ownerAuction;
+    2    uint256 idNFT;
+    3    uint256 amount;
+    4    uint256 timeStart;
+    5    uint256 timeEND;
+    6    uint256 minBet;
+    7    uint256 indexInStore;
+    } -->
+
 <div class="nft-grid">
     {% for item in auctions %}
         {% set auc = item.auction %}
         {% set bet = item.bet %}
 
         <div class="info">
-            <!-- если появится imgPath, подставишь -->
-            <!-- <img src="{{ auc[?] }}" alt="nft_img"> -->
 
             <div>
                 <h3>ID NFT: {{ auc[2] }}</h3>
@@ -36,13 +45,16 @@
 
                     <form action="{{ url_for('auc.setBet', id=auc[0]) }}" method="POST">
                         <input type="number"
-                               name="amount"
-                               min="{{ auc[6] }}"
-                               required>
+								name="amount"
+								min="{{ auc[6] }}"
+								required>
 
                         <button type="submit">BET</button>
                     </form>
                 </details>
+				<form action="{{ url_for('auc.finishAuctionNFT', index=auc[0]) }}" method="POST">
+					<button type="submit" class="button">END</button>
+				</form>
             </div>
         </div>
     {% endfor %}

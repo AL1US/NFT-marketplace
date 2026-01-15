@@ -18,7 +18,7 @@
       </div>
 
       <div class="nav-right">
-        {% if not session.get("pk") %}
+        {% if not session.get("public_key") %}
         <a id="acc" href="/login">Sign in</a>
         {% else %}
         <a href="/profile">Profile</a>

@@ -8,7 +8,7 @@
 </div>
 
 <a href="{{ url_for('user.approve') }}" class="button">Approve contract</a>
-{% if session.get('pk') %}
+{% if session.get("public_key") %}
 <a href="{{ url_for('user.logout') }}" class="button">Logout</a>
 {% else %}
 <p>Вы не вошли в систему</p>

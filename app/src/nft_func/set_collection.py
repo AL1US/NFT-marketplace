@@ -33,7 +33,7 @@ def setCollection():
             return redirect("/profile")
         
         except Exception as e:
-            flash(str(e), "error"), 500
+            flash(str(e), "error")
     return render_template("setCollection.html")
 
 
@@ -53,7 +53,7 @@ def collection():
         collection = collection
     )
 
-@coll_app.route("/setCollectionInStore<int:id>", methods=["POST"])
+@coll_app.route("/setCollectionInStore/<int:id>", methods=["POST"])
 def setCollectionInStore(id):
     if "public_key" not in session:
         return redirect("/login")
@@ -74,7 +74,8 @@ def setCollectionInStore(id):
         ) 
         
     except Exception as e:
-        return flash(str(e), "error")
+        flash(str(e), "error")
+        return redirect("/collection")
     return redirect("/collection")
 
 
@@ -98,6 +99,7 @@ def buy_collection(index, price):
     except Exception as e:
         flash(str(e), "error")
         
+        return redirect("/profile")
     return redirect("/profile")
 
 @coll_app.route("/setNFTInColl/<int:id>", methods=["POST"])
@@ -122,9 +124,10 @@ def setNFTInColl(id):
                 ],
                 is_transact=True,
             )
+        
     except Exception as e:
         flash(str(e), "error")
-        
+        return redirect("/profile")
     return redirect("/profile")
 
 
