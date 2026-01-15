@@ -307,6 +307,33 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         return auctions;
     }
 
+    // Получить все ставки по NFT-аукционам
+    function getAllBetsNFT() public view returns (structBet[] memory) {
+        uint256 count = 0;
+
+        // Считаем количество существующих ставок
+        for (uint256 i = 0; i < indexNFTAuction; i++) {
+            if (auctionNFT[i].ownerAuction != address(0) && betNFT[i].price > 0) {
+                count++;
+            }
+        }
+
+        // Создаём массив нужного размера
+        structBet[] memory bets = new structBet[](count);
+        uint256 index = 0;
+
+        // Заполняем массив
+        for (uint256 i = 0; i < indexNFTAuction; i++) {
+            if (auctionNFT[i].ownerAuction != address(0) && betNFT[i].price > 0) {
+                bets[index] = betNFT[i];
+                index++;
+            }
+        }
+
+        return bets;
+    }
+
+
 
     // get auction collection
     function getAuctionCollection(uint256 _index) public view returns(structAuctionCollection memory) {

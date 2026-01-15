@@ -5,6 +5,7 @@ from src.user.account import user_app
 from src.user.profile import profile_app
 from src.nft_func.set_nft import nft_app
 from src.nft_func.set_collection import coll_app
+from src.nft_func.auction import auc_app
 
 app = Flask(__name__)
 app.secret_key = 'secret_key' 
@@ -13,6 +14,7 @@ app.register_blueprint(user_app)
 app.register_blueprint(profile_app)
 app.register_blueprint(nft_app)
 app.register_blueprint(coll_app)
+app.register_blueprint(auc_app)
 
 # 404 обработчик
 @app.errorhandler(404)
