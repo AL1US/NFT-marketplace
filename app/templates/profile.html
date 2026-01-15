@@ -7,6 +7,13 @@
   <p>name: {{ data[0] }}</p>
 </div>
 
+<a href="{{ url_for('user.approve') }}" class="button">Approve contract</a>
+{% if session.get('pk') %}
+<a href="{{ url_for('user.logout') }}" class="button">Logout</a>
+{% else %}
+<p>Вы не вошли в систему</p>
+{% endif %} 
+
 <!-- struct structNFT {
         0 uint256 id;
         1 string name;
@@ -17,18 +24,51 @@
         6 uint256 creationDate;
     } -->
 
-<div>
-  <h1>NFT</h1>
-  <img src="{{ nft[0][3] }}" alt="ImageNFT" />
-  <p>{{nft[0][0]}}</p>
-  <p>{{nft[0][1]}}</p>
-  <p>{{nft[0][2]}}</p>
-  <!-- <p>{{nft[0][3]}}</p>  -->
-  <p>{{nft[0][4]}}</p>
+<div class="nft-grid">
+	{% for item in nft %}
+		<div class="info">
+		<img src="{{ item[3] }}" alt="nft_img">
+			<div>
+				<h3>id: {{ item[0] }}</h3>
+				<h3>{{ item[1] }}</h3>
+				<p>{{ item[2] }}</p>
+				<p>Количество: {{ item[5] }}</p>
+
+				
+				<details>
+				<summary class="sell-btn">Выставить на продажу</summary>
+
+				<form action="{{ url_for('nft.setNFTInStore', id=item[0]) }}" method="POST">
+					<input type="hidden" name="id" value="{{ item[0] }}">
+
+					<label>Количество:</label>
+					<input type="number" name="amount" min="1" required>
+
+					<label>Цена:</label>
+					<input type="number" name="price" min="1" required>
+
+					<button type="submit">Подтвердить</button>
+				</form>
+			</details>
+			</div>
+		</div>
+	{% endfor %}
+	{% for i in collection%}
+	    <!-- struct structCollectionNFT {
+        uint256 id;
+        string name;
+        string description;
+        uint256 price; // Заполняется только после помещения в магазин
+        structNFTsInCollection[] NFTInCollection;
+        bool state; // Нужно для того чтобы понять в магазине или нет
+        bool existence; // Нужно для проверки того, есть ли такая коллекция у юзера
+        uint256 creationDate;
+    } -->
+		<div>
+
+		</div>
+	{% endfor %}
+
 </div>
-<a href="{{ url_for('user.approve') }}">Approve contract</a>
-{% if session.get('pk') %}
-<a href="{{ url_for('user.logout') }}" >Logout</a>
-{% else %}
-<p>Вы не вошли в систему</p>
-{% endif %} {% endblock %}
+
+{% endblock %}

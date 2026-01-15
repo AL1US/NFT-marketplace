@@ -77,6 +77,7 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         address owner;
         uint256 amount;
         uint256 price;
+        uint256 indexInStore;
     }
 
     struct structCollectionInStore {
@@ -84,6 +85,7 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         address owner;
         structNFTsInCollection[] NFTInCollection;
         uint256 price;
+        uint256 indexInStore;
     }
 
     // Струкутры аукциона
@@ -95,6 +97,7 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         uint256 timeStart;
         uint256 timeEND;
         uint256 minBet;
+        uint256 indexInStore;
     }
 
     struct structAuctionCollection {
@@ -105,6 +108,7 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         uint256 timeStart;
         uint256 timeEND;
         uint256 minBet;
+        uint256 indexInStore;
     }
 
 
@@ -433,7 +437,8 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
             _id,
             msg.sender,
             _amount,
-            _price
+            _price,
+            indexNFTInStore
         );
 
         // Переводим наши нфт контракту. Что-то типа листинга. Реализуется в main
@@ -514,6 +519,7 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
         s.id = _id;
         s.owner = msg.sender;
         s.price = _price;
+        s.indexInStore = unicueCollectionNFTInStore;
 
         for (uint256 i = 0; i < col.length; i++) {
             s.NFTInCollection.push(col[i]);
@@ -584,7 +590,8 @@ contract Contract is ERC20, ERC1155, ERC1155Holder{
             _amount,
             block.timestamp,
             block.timestamp + _endAuction,
-            _minBet
+            _minBet,
+            indexNFTAuction
         );
 
         // Переводим наши нфт контракту. Что-то типа листинга. Реализуется в main

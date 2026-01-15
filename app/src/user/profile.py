@@ -21,10 +21,15 @@ def profile():
         method_name="getMyAllNFTs",
     )
     
+    collection = contract_client.to_transact(
+        method_name="getMyCollections",
+    )
+    
     return render_template(
         "profile.html",
         data=user,
         public_key=public_key,
         balance=balance,
-        nft = nft
+        nft = nft,
+        collection = collection
     )

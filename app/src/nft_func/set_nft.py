@@ -38,43 +38,76 @@ def setNFT():
             return redirect("/profile")
         
         except Exception as e:
-            flash({'error': str(e)}), 500
+            flash(str(e), "error"), 500
     return render_template("setNFT.html")
 
 
-@nft_app.route("/setNFTInStore", methods=['GET', 'POST'])
-def setNFTInStore():
+@nft_app.route("/setNFTInStore/<int:id>", methods=["POST"])
+def setNFTInStore(id):
     if "public_key" not in session:
         return redirect("/login")
 
     contract_client.set_account(session["public_key"])
+
+    try:
+        
+        amount_str = request.form.get("amount") 
+        price_str = request.form.get("price")
+        amount = int(amount_str)
+        price = int(price_str)
+        
+        if not all([amount_str, price_str]):
+            flash('Заполните все поля!', 'error')
+            return render_template("setNFTInStore.html")
+        
+        if amount <= 0 or price <= 0:
+            flash("Количество и цена должны быть больше 0", "error")
+            return redirect("/profile")
+        
+        contract_client.to_transact(
+            method_name="setNFTInStore",
+            args=[
+                id,
+                amount,
+                price
+            ],
+            is_transact=True
+        )
+        return redirect("/")
+        
+    except Exception as e:
+        flash(str(e), "error")
+        return redirect("/profile")
+        
+
+@nft_app.route("/buy_nft/<int:index>/<int:price>", methods=["POST"])
+def buy_nft(index, price):
+    if "public_key" not in session:
+        return redirect("/login")
     
-    
-    if request.method == "POST":
-        try:
-            nft_id = request.form.get("id")
-            amount_str = request.form.get("amount") 
-            price_str = request.form.get("price")
-            
-            if not all([nft_id, amount_str, price_str]):
-                flash('Заполните все поля!', 'error')
-                return render_template("setNFTInStore.html")
-            
-            id = int(nft_id)
-            amount = int(amount_str)
-            price = int(price_str)
-            
-            contract_client.to_transact(
-                method_name="setNFTInStore",
+    contract_client.set_account(session["public_key"])
+    #     struct structNFTsInStore {
+    #     uint256 id;
+    #     address owner;
+    #     uint256 amount;
+    #     uint256 price;
+    #     uint256 indexInStore;
+    # }
+        
+    try:
+        
+        contract_client.to_transact(
+                method_name="buyNFT",
                 args=[
-                    id,
-                    amount,
-                    price
+                    index,
+                    1,
                 ],
-                is_transact=True
+                is_transact=True,
+                value_wei=price
             )
-            return redirect("/")
-            
-        except Exception as e:
-            flash({'error': str(e)}), 500
-    return render_template("setNFTInStore.html")
+    except Exception as e:
+        flash(str(e), "error")
+        
+    return redirect("/profile")
+
+

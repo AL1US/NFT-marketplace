@@ -52,3 +52,32 @@ nav a:hover {
     padding-top: 70px;
     margin-left: 30px;
 }
+
+.nft-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.button {
+    display: flex;
+    width: fit-content;
+    padding: 10px 15px;
+    margin: 10px;
+    background-color: rgb(219, 219, 219);
+    color: black;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: rgba(219, 219, 219, 0.478);
+
+}
+
+details form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

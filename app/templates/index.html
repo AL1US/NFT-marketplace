@@ -8,13 +8,29 @@
     <h1>Home</h1>
 </div>
 
+    <!-- struct structNFTsInStore {
+    0 - uint256 id;
+    1 - address owner;
+    2 - uint256 amount;
+    3 - uint256 price;
+	4 - uint256 indexInStore;
+    } -->
 
-<div>
-  <h1>NFT</h1>
-  <p>{{nft[0]}}</p>
-  <p>{{nft[1]}}</p>
-  <p>{{nft[2]}}</p>
-  <p>{{nft[3]}}</p>
+<div class="nft-grid">
+	{% for item in nft %}
+		<div>
+		<img src="{{ item[3] }}" alt="nft_img">
+			<div>
+				<!-- по хорошему еще вытянуть имя nft -->
+				<h3>id: {{ item[0] }}</h3>
+				<h3>Количество: {{ item[2] }}</h3>
+				<h3>{{ item[3] }}wei(1)</h3>
+				<form action="{{ url_for('nft.buy_nft', index=item[4], price=item[3]) }}" method="POST">
+					<button type="submit" class="button">BUY</button>
+				</form>
+			</div>
+		</div>
+	{% endfor %}
 </div>
 
 {% endblock %}
