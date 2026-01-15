@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block title %}Create NFT{% endblock %} {% block body %}
+
+<div>
+    <h1>Создать NFT</h1>
+    <form method="post">
+        <label for="name_nft">Название:</label><br />
+        <input type="text" name="name_coll" id="name_coll" placeholder="Введите название" /><br /><br />
+
+        <label for="description">Описание:</label><br />
+        <textarea name="description" id="description" placeholder="Введите Описание"></textarea><br /><br />
+
+        <input type="submit" value="Создать" />
+    </form>
+</div>
+
+{% endblock %}

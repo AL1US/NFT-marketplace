@@ -35,7 +35,7 @@
 				<p>Количество: {{ item[5] }}</p>
 
 				
-				<details>
+			<details>
 				<summary class="sell-btn">Выставить на продажу</summary>
 
 				<form action="{{ url_for('nft.setNFTInStore', id=item[0]) }}" method="POST">
@@ -46,6 +46,21 @@
 
 					<label>Цена:</label>
 					<input type="number" name="price" min="1" required>
+
+					<button type="submit">Подтвердить</button>
+				</form>
+			</details>
+			<details>
+				<summary class="sell-btn">Добавить в коллекцию</summary>
+
+				<form action="{{ url_for('coll.setNFTInColl', id=item[0]) }}" method="POST">
+					<input type="hidden" name="id_nft" value="{{ item[0] }}">
+
+					<label>Количество:</label>
+					<input type="number" name="amount" min="1" required>
+
+					<label>ID коллекции:</label>
+					<input type="number" name="id_coll" min="0" required>
 
 					<button type="submit">Подтвердить</button>
 				</form>
@@ -74,6 +89,7 @@
 			<p>id: {{ item[0] }}</p>
 			<p>name: {{ item[1] }}</p>
 			<p>description: {{ item[2] }}</p>
+			<p>all nft in collection: {{ item[4] }}</p>
 			<p>state: {{ item[5] }}</p>
 			<details>
 				<summary class="sell-btn">Выставить на продажу</summary>
