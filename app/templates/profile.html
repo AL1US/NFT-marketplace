@@ -65,6 +65,24 @@
 					<button type="submit">Подтвердить</button>
 				</form>
 			</details>
+			<details>
+				<summary class="sell-btn">Выставвить на аукцион</summary>
+
+				<form action="{{ url_for('auc.setAucNFT', id=item[0]) }}" method="POST">
+					<input type="hidden" name="id" value="{{ item[0] }}">
+
+					<label>Количество:</label>
+					<input type="number" name="amount" min="1" required>
+
+					<label>Минимальная ставка:</label>
+					<input type="number" name="min_bet" min="0" required>
+
+					<label>Окончание аукциона в секундах:</label>
+					<input type="number" name="end_auction" min="1" required>
+
+					<button type="submit">Подтвердить</button>
+				</form>
+			</details>
 			</div>
 		</div>
 	{% endfor %}

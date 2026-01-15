@@ -8,34 +8,44 @@
     <h1>Auctions NFT</h1>
 </div>
 
-    <!-- struct structAuctionNFT {
-    0    uint256 id;
-    1    address ownerAuction;
-    2    uint256 idNFT;
-    3    uint256 amount;
-    4    uint256 timeStart;
-    5    uint256 timeEND;
-    6    uint256 minBet;
-    7    uint256 indexInStore;
-    } -->
-
 <div class="nft-grid">
-	{% for item in auctions %}
-		<div>
-		<img src="{{ item[3] }}" alt="nft_img">
-			<div>
-				<!-- по хорошему еще вытянуть имя nft -->
-				<h3>id NFT: {{ item[2] }}</h3>
-				<h3>Количество: {{ item[3] }}</h3>
-				<h3>time start {{ item[4] }}</h3>
-				<h3>time end {{ item[5] }}</h3>
-				<h3>min bet {{ item[7] }}</h3>
-				<form action="{{ url_for('nft.buy_nft', index=item[4], price=item[3]) }}" method="POST">
-					<button type="submit" class="button">BUY</button>
-				</form>
-			</div>
-		</div>
-	{% endfor %}
+    {% for item in auctions %}
+        {% set auc = item.auction %}
+        {% set bet = item.bet %}
+
+        <div class="info">
+            <!-- если появится imgPath, подставишь -->
+            <!-- <img src="{{ auc[?] }}" alt="nft_img"> -->
+
+            <div>
+                <h3>ID NFT: {{ auc[2] }}</h3>
+                <h3>Количество: {{ auc[3] }}</h3>
+                <h3>Time start: {{ auc[4] }}</h3>
+                <h3>Time end: {{ auc[5] }}</h3>
+                <h3>Min bet: {{ auc[6] }}</h3>
+
+                {% if bet[1] > 0 %}
+                    <h2>Current bet: {{ bet[1] }}</h2>
+                    <p>Leader: {{ bet[0] }}</p>
+                {% else %}
+                    <h2>Current bet: нет ставок</h2>
+                {% endif %}
+
+                <details>
+                    <summary class="sell-btn">Сделать ставку</summary>
+
+                    <form action="{{ url_for('auc.setBet', id=auc[0]) }}" method="POST">
+                        <input type="number"
+                               name="amount"
+                               min="{{ auc[6] }}"
+                               required>
+
+                        <button type="submit">BET</button>
+                    </form>
+                </details>
+            </div>
+        </div>
+    {% endfor %}
 </div>
 
 {% endblock %}
